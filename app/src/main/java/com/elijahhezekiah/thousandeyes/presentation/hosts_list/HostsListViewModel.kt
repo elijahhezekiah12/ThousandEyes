@@ -58,10 +58,9 @@ class HostsListViewModel @Inject constructor(
 
     suspend fun returnHostLatency (hosts:String): Double  = coroutineScope{
 
-
             withContext((Dispatchers.IO)){
 
-             val avgLatency  = pingService.pingHostFiver(hosts)
+                val avgLatency  = pingService.pingHostFiver(hosts)
 
                return@withContext avgLatency
             }

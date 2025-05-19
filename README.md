@@ -46,7 +46,7 @@ This will allow me to create a better user experience and also manage threading 
 
 
 I would have love to use a progress bar when it is needed as I am running a long running task 
-(I couldn’t because I just recovered from being sick and I had to rush this technical test).
+
 
 I would have written some unit test as that is very important
 
