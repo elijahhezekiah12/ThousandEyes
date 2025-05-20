@@ -60,7 +60,7 @@ class HostsListViewModel @Inject constructor(
 
             withContext((Dispatchers.IO)){
 
-                val avgLatency  = pingService.pingHostFiver(hosts)
+             val avgLatency  = pingService.pingHostFiver(hosts)
 
                return@withContext avgLatency
             }

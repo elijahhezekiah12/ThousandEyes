@@ -1,6 +1,11 @@
 package com.elijahhezekiah.pinglib
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -14,43 +19,52 @@ class PingHost {
 
        @Params hosts
      */
-    fun getLatency(hosts: String): Double {
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getLatency(hosts: String): Double {
         val pingCommand = ("/system/bin/ping -c 5 ").toString() + hosts
         var inputLine = ""
         var avgRtt = 0.0
         var process: Process? = null
         try {
 
-            runBlocking {
+            /**
+             * Using NonCancellable to ensure the ping command is executed on a background thread
+             * before rendering the result.
+             */
 
-                // execute the command on the environment interface
+            withContext(NonCancellable) {
 
-                val runtime = Runtime.getRuntime()
-                process = runtime.exec(pingCommand)
+                launch(Dispatchers.IO) {
 
-                // gets the input stream to get the output of the executed command
-                val bufferedReader = process?.inputStream?.let { InputStreamReader(it) }
-                    ?.let { BufferedReader(it) }
+                    // execute the command on the environment interface
 
-                println("this is is in the bufferReader ${bufferedReader?.readLine()}")
+                    val runtime = Runtime.getRuntime()
+                    process = runtime.exec(pingCommand)
 
-                if (process == null || bufferedReader?.readLine() == null){
-                    inputLine = "unknown host"
-                }
+                    // gets the input stream to get the output of the executed command
+                    val bufferedReader = process?.inputStream?.let { InputStreamReader(it) }
+                        ?.let { BufferedReader(it) }
+
+                    println("this is is in the bufferReader ${bufferedReader?.readLine()}")
+
+                    if (process == null || bufferedReader?.readLine() == null){
+                        inputLine = "unknown host"
+                    }
                     else{
-                       while (inputLine!= null ){
-                           if (inputLine.isNotEmpty() && inputLine.contains("avg")) {
-                               break
-                           }
-                           if (bufferedReader != null) {
-                               inputLine = bufferedReader.readLine()
-                           }
-                           print("PING RESPONSE = $inputLine")
-                           println()
+                        while (inputLine!= null ){
+                            if (inputLine.isNotEmpty() && inputLine.contains("avg")) {
+                                break
+                            }
+                            if (bufferedReader != null) {
+                                inputLine = bufferedReader.readLine()
+                            }
+                            print("PING RESPONSE = $inputLine")
+                            println()
 
-                       }
+                        }
+                    }
+
                 }
-
             }
 
         } catch (e: IOException) {

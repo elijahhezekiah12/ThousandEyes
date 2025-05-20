@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,6 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.elijahhezekiah.thousandeyes.R
 import com.elijahhezekiah.thousandeyes.model.HostsModelItem
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -44,14 +42,14 @@ fun HostListItem(
         error(R.drawable.ic_placeholder)
         placeholder(R.drawable.ic_placeholder)
     }
-    val coroutineScope = rememberCoroutineScope()
+
     var avgLatency by remember { mutableDoubleStateOf(0.0) }
 
     LaunchedEffect(hostsModelItem.name) {
-        coroutineScope.launch {
-                avgLatency = viewModel.returnHostLatency(hostsModelItem.url)
 
-        }
+     avgLatency = viewModel.returnHostLatency(hostsModelItem.url)
+
+
     }
 
     Row(

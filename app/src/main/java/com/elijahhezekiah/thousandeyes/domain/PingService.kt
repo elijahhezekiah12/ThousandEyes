@@ -7,7 +7,7 @@ import com.elijahhezekiah.pinglib.PingHost
  */
 class PingService {
 
-    fun pingHostFiver(hosts :String): Double {
+    suspend fun pingHostFiver(hosts :String): Double {
        return PingHost().getLatency(hosts)
     }
 
